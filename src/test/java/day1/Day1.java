@@ -108,5 +108,81 @@ public class Day1 {
 
     }
 
+    // query params as a map object
+    @Test
+    public void test7(){
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("gender","Female");
+        queryParams.put("nameContains","j");
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .when().queryParams(queryParams)
+                .when().get("/api/spartans/search");
+
+        response.prettyPrint();
+    }
+
+
+    // negative testing
+    @Test
+    public void test8(){
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .get("api/spartans/10000");
+
+        Assertions.assertEquals(404, response.statusCode());
+    }
+
+    // post new spartan
+    @Test
+    public void test9(){
+
+        String newSpartan = "{\n" +
+                "  \"gender\": \"Male\",\n" +
+                "  \"name\": \"David\",\n" +
+                "  \"phone\": 3692581478\n" +
+                "}";
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .and()
+                .contentType(ContentType.JSON)
+                .body(newSpartan)
+                .when().post("/api/spartans");
+
+        System.out.println(response.statusCode());
+        response.prettyPrint();
+        Assertions.assertEquals("A Spartan is Born!", response.path("success"));
+    }
+
+    // update spartan
+    @Test
+    public void test10(){
+        String updatedSpartan = "{\n" +
+                "  \"gender\": \"Male\",\n" +
+                "  \"name\": \"Jacob\",\n" +
+                "  \"phone\": 3692581478\n" +
+                "}";
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .and()
+                .contentType(ContentType.JSON)
+                .body(updatedSpartan)
+                .pathParam("id",313)
+                .when().put("/api/spartans/{id}");
+
+        System.out.println(response.statusCode());
+    }
+
+    // delete a spartan
+    @Test
+    public void test11(){
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .pathParam("id", 313)
+                .when().delete("/api/spartans/{id}");
+
+        System.out.println(response.statusCode());
+    }
+
+
+
 
 }
