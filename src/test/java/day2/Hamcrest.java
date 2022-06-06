@@ -26,4 +26,38 @@ public class Hamcrest {
 
 
     }
+
+    @Test
+    public void test2(){
+        String text = "Api course";
+
+        assertThat(text, is("Api course"));
+        assertThat(text, startsWith("Ap"));
+        assertThat(text, endsWith("se"));
+        assertThat(text, containsString("course"));
+//        assertThat(text, is("Api course"));
+    }
+
+    @Test
+    public void test3(){
+        List<Integer> listOfNumbers = Arrays.asList(1,4,5,6,32,54,66,43,12,312,35);
+
+        assertThat(listOfNumbers, hasSize(11));
+        assertThat(listOfNumbers, hasItem(32));
+        assertThat(listOfNumbers, everyItem(greaterThan(0)));
+
+    }
+
+    @Test
+    public void test4(){
+        given().accept(ContentType.JSON)
+                .and()
+                .pathParams("id", 107)
+                .when()
+                .get("/api/spartans/{id}")
+                .then().assertThat()
+                .body("id",is(107),
+                        "name",is("Jessica"));
+
+    }
 }
