@@ -26,6 +26,24 @@ public class JsonToJava extends SpartanTestBase {
         System.out.println(responseMap.get("id"));
         System.out.println(responseMap.get("name"));
 
+    }
+
+    // response to list
+    @Test
+    public void test2(){
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .when().get("api/spartans");
+
+//        response.prettyPrint();
+
+        List<Map<String, Object>> responseList = response.as(List.class);
+
+        System.out.println(responseList);
+
+        // I want no20 spartan from the list
+        System.out.println(responseList.get(19).get("id"));
+        System.out.println(responseList.get(19).get("name"));
+        System.out.println(responseList.get(19).get("phone"));
 
 
     }
