@@ -20,4 +20,12 @@ public class SpartanAuthTest {
                 .when().get("/api/spartans")
                 .then().statusCode(200).log().all();
     }
+
+    // http basic
+    // api key (for request)    --- token (for user)
+    // oAuth
+       // 2 is more secure
+        // 1 is using digital signature, 2 is using bearer token( easy to share and use, not good for secure)
+        // 2 is more flexible ( 1 is only for web, but 2 is also for non-web, like mobile)
+    // no auth
 }
