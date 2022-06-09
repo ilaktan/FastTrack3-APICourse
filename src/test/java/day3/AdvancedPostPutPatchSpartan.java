@@ -8,8 +8,13 @@ import org.junit.jupiter.api.*;
 import utility.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.given;
+import io.restassured.module.jsv.JsonSchemaValidator;
 
 
+
+
+import java.io.*;
 import java.util.*;
 
 public class AdvancedPostPutPatchSpartan extends SpartanTestBase {
@@ -50,4 +55,75 @@ public class AdvancedPostPutPatchSpartan extends SpartanTestBase {
         assertThat(response.statusCode(),is(201));
 
     }
+
+    // post a sparan with a payload file
+    @Test
+    public void test3(){
+
+        File file = new File("C:\\Users\\Zulpikar\\IdeaProjects\\FastTrack3-APICourse\\src\\test\\resources\\addNewSpartan.json");
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .and().contentType(ContentType.JSON)
+                .body(file)
+                .when().post("/api/spartans");
+
+        response.prettyPrint();
+    }
+
+    // partial update a spartan
+    @Test
+    public void test4(){
+        Map<String, Object> patchASpartan = new HashMap<>();
+        patchASpartan.put("name","Murat");
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .and().contentType(ContentType.JSON)
+                .body(patchASpartan)
+                .and().pathParam("id",107)
+                .when().patch("/api/spartans/{id}");
+
+        response.prettyPrint();
+    }
+
+    // response time test
+    @Test
+    public void test5(){
+
+        Response response = RestAssured.given().accept(ContentType.JSON)
+                .when().get("/api/spartans")
+                .then().statusCode(200)
+                .and()
+                .time(lessThan(1000l)).extract().response();
+
+        response.prettyPrint();
+    }
+
+    // schema validation for a single spartan
+    @Test
+    public void test6(){
+
+        given().accept(ContentType.JSON)
+                .pathParams("id",107)
+                .when().get("/api/spartans/{id}")
+                .then().statusCode(200)
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("SingleSpartanSchema.json"));
+    }
+
+    // schema validation for all spartans
+    @Test
+    public void test7(){
+        File file = new File("C:\\Users\\Zulpikar\\IdeaProjects\\FastTrack3-APICourse\\src\\test\\java\\day3\\allSpartansSchema.json");
+
+        given().accept(ContentType.JSON)
+                .when().get("/api/spartans/")
+                .then().statusCode(200)
+                .body(JsonSchemaValidator.matchesJsonSchema(file));
+
+
+    }
+
+
+
+
+
 }
